@@ -1,0 +1,30 @@
+import 'package:flutter/material.dart';
+
+import '../../../services/auth_service.dart';
+
+class LoginViewModel extends ChangeNotifier {
+  bool _isLoading = false;
+  String? _error;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  final AuthService authService;
+
+  LoginViewModel({required this.authService});
+
+  Future<bool> login(String username, String password) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final isSuccess = await authService.login(username, password);
+      _isLoading = false;
+      notifyListeners();
+      return isSuccess;
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+}
